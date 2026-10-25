@@ -5,7 +5,7 @@ export default defineConfig({
   workers: 1,
   use: {
     browserName: 'chromium',
-    channel: 'msedge',
+    channel: process.env.CI ? undefined : 'msedge',
     headless: true,
   },
 });

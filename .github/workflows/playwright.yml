@@ -1,0 +1,35 @@
+name: Playwright tests
+
+on:
+  push:
+  workflow_dispatch:
+    inputs:
+      site_url:
+        description: Publicly reachable AI Center URL (or leave blank to use the repository variable)
+        required: false
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  ai-center:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      AI_CENTER_REQ_SITE_URL_1: ${{ inputs.site_url || vars.AI_CENTER_REQ_SITE_URL_1 }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - name: Check site URL input
+        run: |
+          if [ -z "$AI_CENTER_REQ_SITE_URL_1" ]; then
+            echo "Set the AI_CENTER_REQ_SITE_URL_1 repository variable or provide site_url when dispatching this workflow."
+            exit 1
+          fi
+      - run: npx playwright test
