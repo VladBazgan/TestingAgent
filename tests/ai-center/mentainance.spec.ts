@@ -4,6 +4,7 @@ test('asks ChatGPT GPT-6-Luna a question @development', { tag: '@development' },
   const siteUrl = process.env.AI_CENTER_REQ_SITE_URL_1;
   expect(siteUrl, 'AI_CENTER_REQ_SITE_URL_1 must be set').toBeTruthy();
 
+  await page.setExtraHTTPHeaders({ 'ngrok-skip-browser-warning': 'true' });
   await page.goto(siteUrl!);
   await page.getByRole('link', { name: /Development/ }).click();
   await page.getByText('Models', { exact: true }).click();
